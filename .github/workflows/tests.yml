@@ -34,9 +34,20 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [8.1, 8.2]
-        laravel: [^9.0, ^10]
+        php: [8.1, 8.2, 8.3, 8.4]
+        laravel: [^9.0, ^10, ^11, ^12]
         dependency-version: [prefer-stable, prefer-lowest]
+        exclude:
+          - php: 8.1
+            laravel: ^11
+          - php: 8.2
+            laravel: ^11
+          - php: 8.1
+            laravel: ^12
+          - php: 8.2
+            laravel: ^12
+          - php: 8.3
+            laravel: ^12
     timeout-minutes: 15
     steps:
       - name: Checkout Code
@@ -50,6 +61,6 @@ jobs:
       - name: Install Composer dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --no-suggest
+          composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist --no-suggest -W
       - name: Run tests
         run: composer test
